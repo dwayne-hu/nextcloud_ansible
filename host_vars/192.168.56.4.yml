@@ -1,0 +1,3 @@
+nextcloud_volume: nextcloud
+mariadb_volume: mariadb
+nextcloud_network: nc_network

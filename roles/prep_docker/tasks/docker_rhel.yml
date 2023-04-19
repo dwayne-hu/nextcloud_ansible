@@ -1,0 +1,36 @@
+---
+- name: Install yum-utils
+  ansible.builtin.yum:
+    name: yum-utils
+    state: latest
+
+- name: Add repository
+  ansible.builtin.yum_repository:
+    name: docker-ce
+    description: Docker repo 
+    baseurl: https://download.docker.com/linux/rhel/docker-ce.repo
+
+- name: Install Docker and all requierements 
+  ansible.builtin.yum:
+    name:
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io 
+      - docker-buildx-plugin 
+      - docker-compose-plugin
+    state: latest
+
+- name: add user permissions
+  ansible.builtin.shell: "usermod -aG docker {{ ansible_user_id }}"
+
+- name: Install pip
+  ansible.builtin.yum:
+    name:
+      - python3-pip
+
+- name: Install python sdk
+  become_user: "{{ ansible_user_id }}"
+  ansible.builtin.pip:
+    name:
+      - docker
+      - docker-compose

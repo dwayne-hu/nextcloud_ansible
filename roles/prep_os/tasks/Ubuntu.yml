@@ -1,0 +1,28 @@
+---
+# run systemspecific tasks on ubuntu
+
+- name: update and upgrade packages and os (ubuntu)
+  tags: always
+  ansible.builtin.apt:
+    update_cache: yes
+    upgrade: dist
+    autoclean: yes
+
+- name: install ufw
+  ansible.builtin.apt:
+    name: ufw
+    state: present
+  when: enable_firewall
+
+- name: open port for ssh
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    comment: open port for nextcloud
+    state: enabled
+  with_items: 
+    - "{{ssh_port}}"
+    - "80"
+    - "443"
+

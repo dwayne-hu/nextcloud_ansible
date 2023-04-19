@@ -1,0 +1,11 @@
+---
+# Install docker and all prerequisites 
+
+- name: install docker on ubuntu
+  include_tasks: docker_ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+
+
+- name: install docker on rhel
+  include_tasks: docker_rhel.yml
+  when: ansible_distribution == "RedHat"

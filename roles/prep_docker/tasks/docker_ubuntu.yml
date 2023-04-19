@@ -1,0 +1,46 @@
+---
+- name: Install prerequisites
+  ansible.builtin.apt:
+    name:
+      - ca-certificates
+      - curl
+      - gnupg
+    state: present
+    update_cache: yes
+
+- name: Add GPG apt Key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Add Repository
+  ansible.builtin.apt_repository:
+    repo: "deb https://download.docker.com/linux/ubuntu {{ansible_lsb.codename}} stable"
+    state: present
+    update_cache: yes
+
+- name: Install docker
+  ansible.builtin.apt:  
+    update_cache: yes
+    name:
+      - docker-ce 
+      - docker-ce-cli 
+      - containerd.io 
+      - docker-buildx-plugin
+      - docker-compose-plugin
+    state: latest
+
+- name: add user permissions
+  ansible.builtin.shell: "usermod -aG docker {{ ansible_user_id }}"
+
+- name: Install pip
+  ansible.builtin.apt:
+    name:
+      - python3-pip
+
+- name: Install python sdk
+  become_user: "{{ ansible_user_id }}"
+  ansible.builtin.pip:
+    name:
+      - docker
+      - docker-compose

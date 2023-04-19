@@ -1,0 +1,29 @@
+---
+- name: prepare os and install docker
+  hosts: all
+  become: true
+  roles:
+    - prep_os
+    - prep_docker
+
+
+- name: install portainer via docker 
+  hosts: all
+  become: true 
+  become_user: "{{ansible_user_id}}"
+  roles: 
+    - role: prep_portainer 
+
+
+- name: install watchtower via docker 
+  hosts: all
+  become: true
+  become_user: "{{ansible_user_id}}"
+  roles:
+    - role: prep_watchtower
+
+- hosts: all
+  become: yes
+  become_user: "{{ansible_user_id}}"
+  roles:
+    - prep_nextcloud

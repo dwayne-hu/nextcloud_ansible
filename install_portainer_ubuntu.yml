@@ -1,0 +1,23 @@
+---
+    - name: "run portainer installation if on ubuntu"
+      become: True
+      become_user: "{{ ansible_user_id }}"
+      community.docker.docker_container:
+        name: Portainer
+        image: portainer/portainer-ce
+        ports:
+          - "9443:9443"
+          - "8000:8000"
+        restart_policy: "unless-stopped"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+          - portainer_data:/data
+
+    - name: run watchtower installation
+      community.docker.docker_container:
+        name: watchtower
+        image: containrrr/watchtower
+        command: --schedule "0 0 4 * * *"
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+        restart_policy: "unless-stopped"

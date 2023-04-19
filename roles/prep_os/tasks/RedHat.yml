@@ -1,0 +1,11 @@
+---
+# run systemspecific tasks on RHEL
+
+  - name: Update cache and all packages on RHEL
+    tags: always 
+    ansible.builtin.dnf:
+      update_cache: yes
+      name:
+        - "*"
+      state: latest
+    when: ansible_distribution == "RedHat"
