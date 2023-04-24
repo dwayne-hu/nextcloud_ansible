@@ -9,3 +9,9 @@
         - "*"
       state: latest
     when: ansible_distribution == "RedHat"
+
+  - name: permit traffic in default zone for ssh service
+    ansible.posix.firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
