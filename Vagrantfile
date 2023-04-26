@@ -21,25 +21,25 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         app.vm.network :private_network, ip: "192.168.56.4"
     end
 
-    # App Server 2
-    config.vm.define "srv2" do |db|
-        db.vm.box = "generic/ubuntu1804"
-        db.vm.hostname = "db.test"
-        db.vm.network :private_network, ip: "192.168.56.5"
-    end
+    # # App Server 2
+    # config.vm.define "srv2" do |db|
+    #     db.vm.box = "generic/ubuntu1804"
+    #     db.vm.hostname = "db.test"
+    #     db.vm.network :private_network, ip: "192.168.56.5"
+    # end
 
-    # App Server 3
-    config.vm.define "srv3" do |monitoring|
-        monitoring.vm.box = "generic/ubuntu1804"
-        monitoring.vm.hostname = "monitoring.test"
-        monitoring.vm.network :private_network, ip: "192.168.56.6"
-    end
+    # # App Server 3
+    # config.vm.define "srv3" do |monitoring|
+    #     monitoring.vm.box = "generic/ubuntu1804"
+    #     monitoring.vm.hostname = "monitoring.test"
+    #     monitoring.vm.network :private_network, ip: "192.168.56.6"
+    # end
 
-     # App Server 4
-     config.vm.define "srv4" do |rhel|
-         rhel.vm.box = "generic/rhel8"
-         rhel.vm.hostname = "rhel.test"
-         rhel.vm.network :private_network, ip: "192.168.56.7"
-    end
+    #  # App Server 4
+    #  config.vm.define "srv4" do |rhel|
+    #      rhel.vm.box = "generic/rhel8"
+    #      rhel.vm.hostname = "rhel.test"
+    #      rhel.vm.network :private_network, ip: "192.168.56.7"
+    # end
 end
 

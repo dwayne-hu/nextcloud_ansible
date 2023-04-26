@@ -1,0 +1,6 @@
+---
+# handlers file for prep_docker
+
+- name: reset ssh connection 
+  ansible.builtin.meta:
+    reset_connection

@@ -1,0 +1,5 @@
+---
+# Install and configure Traefik as reverse proxy
+
+- include_tasks: traefik_installation.yml
+  when: install_traefik

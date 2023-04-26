@@ -31,15 +31,21 @@
     state: latest
 
 - name: add user permissions
-  ansible.builtin.shell: "usermod -aG docker {{ ansible_user_id }}"
+  ansible.builtin.user:
+    name: "{{ ansible_user }}"
+    groups: docker
+    append: true
+  notify: reset ssh connection
 
 - name: Install pip
   ansible.builtin.apt:
     name:
       - python3-pip
+    update_cache: yes
 
 - name: Install python sdk
-  become_user: "{{ ansible_user_id }}"
+  # become: true
+  become_user: "{{ ansible_user }}"
   ansible.builtin.pip:
     name:
       - docker

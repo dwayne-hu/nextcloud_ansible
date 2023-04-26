@@ -1,0 +1,57 @@
+---
+# - name: Create a network
+#   community.docker.docker_network:
+#     name: "{{traefik_network}}"
+
+- name: Install traefik 
+  community.docker.docker_container:
+    name: traefikv2
+    image: traefik:v2.10.0
+    restart_policy: "unless-stopped"
+    command:
+      - "--api.insecure=true"
+      - "--providers.docker"
+      - "--entrypoints.websecure.address=:443"
+      - "--certificatesresolvers.le.acme.storage=/letsencrypt/acme.json"
+      - "--certificatesresolvers.le.acme.tlschallenge=true"
+      - "--certificatesresolvers.le.acme.email=dwayne.hullermann@sva.de"
+      # - "--providers.docker.exposedByDefault=false"
+      # - "--providers.docker.network=traefik_network"
+      # - "--entrypoints.websecure.address=:443"
+      # # - "--entrypoints.web.address=:80"
+      # # - "--entrypoints.http.address=:80"
+      # # - "--entrypoints.http.http.redirections.entrypoint.to=https"
+      # # - "--entrypoints.http.http.redirections.entrypoint.scheme=https"
+      # # - "--entrypoints.https.address=:443"
+      # - "--entrypoints.websecure.http.tls.certResolver=le"
+
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/container/letsencrypt:/letsencrypt
+    # networks:
+    #   - name: "{{traefik_network}}"
+
+- name: Add a container to a network, leaving existing containers connected
+  community.docker.docker_network:
+    name: "{{traefik_network}}"
+    connected:
+      - traefikv2
+    appends: true
+
+- name: open port for ssh
+  become: true
+  become_user: root 
+  community.general.ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+    comment: open port for nextcloud
+    state: enabled
+  with_items: 
+    - "443"
+    - "80"
+    - "8080"

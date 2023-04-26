@@ -3,7 +3,7 @@
   community.docker.docker_network:
     name: "{{nextcloud_network}}"
 
-- name: Download and deploy nextcloud docker container
+- name: Download and deploy database docker container
   community.docker.docker_container:
     name: mariadb
     image: mariadb
@@ -19,14 +19,13 @@
       - name: "{{nextcloud_network}}"
   
 
-
 - name: Download and deploy nextcloud docker container
   community.docker.docker_container:
     name: nextcloud
     image: nextcloud
     restart_policy: unless-stopped
-    ports: 
-      - "8080:80"
+    # ports: 
+    #   - "8080:80"
     volumes: 
       - "{{nextcloud_volume}}:/var/www/html"
     links: 
@@ -38,3 +37,18 @@
       MYSQL_HOST: db
     networks:
       - name: "{{nextcloud_network}}"
+      - name: "{{traefik_network}}"
+    labels: 
+      traefik.enable: "true"
+      traefik.http.routers.nextcloud.rule: "Host(`nc.test.dhull.eu`)"
+      traefik.http.routers.my-app.tls.certresolver: "le"
+      traefik.http.routers.my-app.entrypoints: "websecure"
+      traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
+      traefik.http.routers.redirs.rule: "hostregexp(`{host:.+}`)"
+      traefik.http.routers.redirs.entrypoints: "web"
+      traefik.http.routers.redirs.middlewares: "redirect-to-https"
+      # traefik.http.routers.my-app.middlewares: "auth"
+      # traefik.http.routers.nextcloud.tls: "true"
+      # traefik.http.routers.my-app.tls.certresolver: "le"
+      # traefik.http.routers.my-app.entrypoints: "websecure"
+
